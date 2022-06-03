@@ -15,6 +15,14 @@
             <td>{{ $mhs ->nama }}</td>
             <td>{{ $mhs ->pelajaran }}</td>
             <td>{{ $mhs ->jurusan }}</td>
+            <td>
+                <form action="{{ route('mahasiswa.destroy',['mahasiswa'=>$mhs->nim]) }}" method="POST">
+                <a class="button" href="{{ route('mahasiswa.edit',$mhs->nim) }}">Edit</a>
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger">Delete</button>
+            </form>
+        </td>      
         </tr>
         @endforeach
     </table>

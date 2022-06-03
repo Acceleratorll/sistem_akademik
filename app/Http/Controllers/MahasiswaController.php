@@ -21,4 +21,23 @@ class MahasiswaController extends Controller
         Mahasiswa::create($request->all());
         return redirect()->route('mahasiswa.index');
     }
+    
+    public function edit($Nim)
+    {
+        $Mahasiswa = DB::table('mahasiswa')->where('nim', $Nim)->first();
+        return view('edit', compact('Mahasiswa'));
+        
+    }
+    public function update(Request $request, $Nim)
+    {    
+        Mahasiswa::where('nim', $Nim)->first()->update($request->all());
+        return redirect()->route('mahasiswa.index');
+    }
+    public function destroy($Nim)
+    {
+        Mahasiswa::where('nim', $Nim)->first()->delete();
+        return redirect()->route('mahasiswa.index');
+    }
 }
+    
+    
