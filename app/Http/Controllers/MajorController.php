@@ -30,7 +30,7 @@ class MajorController extends Controller
         try {
             Major::create([
                 'name' => $request->name,
-                'desc'
+                'description' => $request->description
             ]);
             return response()->json(['error' => false, 'message' => 'Berhasil Insert Data'], 200);
         } catch (\Exception $e) {

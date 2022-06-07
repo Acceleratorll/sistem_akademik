@@ -7,14 +7,15 @@
                     <div class="card p-3">
                         <div class="panel-body" style="overflow-x: auto">
                             <button type="button" class="btn btn-default btn-primary mb-3" id="btn-tambah">
-                                Tambah Jurusan
+                                Tambah Mahasiswa
                             </button>
                             <table id="table" class="table table-striped table-hover table-responsive-sm">
                                 <thead>
                                     <tr>
                                         <th>No</th>
                                         <th>Nama</th>
-                                        <th>Deskripsi</th>
+                                        <th>Pelajaran</th>
+                                        <th>Major</th>
                                         <th>Aksi</th>
                                     </tr>
                                 </thead>
@@ -28,25 +29,30 @@
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="modalData" tabindex="-1" role="dialog" aria-hidden="true" style="display: none;">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title" id="modal-title">Tambah Jurusan</h4>
+                    <h4 class="modal-title" id="modal-title">Tambah Mahasiswa</h4>
                 </div>
                 <form action="javascript:;" id="form" onsubmit="onSave(this)" method="post">
                     @csrf
-                    <input type="hidden" name="id" id="id">
                     <input type="hidden" name="_method" id="method">
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="nama">Nama</label>
-                            <input type="text" name="name" class="form-control" id="name" placeholder="Nama">
+                            <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama">
                         </div>
                         <div class="form-group">
-                            <label for="nama">Deskripsi</label>
-                            <input type="text" name="description" class="form-control" id="description"
-                                placeholder="Deskripsi">
+                            <label for="nama">Pelajaran</label>
+                            <input type="text" name="pelajaran" class="form-control" id="pelajaran"
+                                placeholder="Pelajaran">
+                        </div>
+                        <div class="form-group">
+                            <label for="nama">Major</label>
+                            <input type="text" name="major" class="form-control" id="major"
+                                placeholder="Major">
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -57,9 +63,7 @@
             </div>
         </div>
     </div>
-@endsection
-
-@section('js')
+    @section('js')
     <script>
         let method
         let url
@@ -69,18 +73,22 @@
             var table = $('#table').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{ route('major.datatable') }}",
+                ajax: "{{ route('mahasiswa.datatable') }}",
                 columns: [{
                         data: 'DT_RowIndex',
                         searchable: false
                     },
                     {
-                        data: 'name',
-                        name: 'name'
+                        data: 'nama',
+                        name: 'nama'
                     },
                     {
-                        data: 'description',
-                        name: 'description'
+                        data: 'pelajaran',
+                        name: 'pelajaran'
+                    },
+                    {
+                        data: 'major',
+                        name: 'major'
                     },
                     {
                         data: 'action',
@@ -91,7 +99,7 @@
                 ]
             });
             $("#btn-tambah").on('click', function() {
-                $("#modal-title").html('Tambah Jurusan')
+                $("#modal-title").html('Tambah Mahasiswa')
                 method = 'insert'
                 $("#method").val('POST')
                 $('#modalData form')[0].reset()
@@ -102,10 +110,10 @@
 
         function onSave() {
             if (method == 'insert') {
-                url = `{{ route('major.store') }}`
+                url = `{{ route('mahasiswa.store') }}`
                 type = "POST"
             } else if (method == 'update') {
-                url = `{{ url('major') }}/${id}`
+                url = `{{ url('mahasiswa') }}/${id}`
                 type = "POST"
             }
             new Promise(function(resolve, reject) {
@@ -142,38 +150,39 @@
                     })
             })
         }
-
+        
         function editData(id) {
-            $("#modal-title").html('Update Tahun')
-            method = 'update'
-            $('#modalData form')[0].reset()
-            $("#btn-submit").html('Update')
-            $('#status').prop('selectedIndex', 0)
-            new Promise((resolve, reject) => {
-                $.ajax({
-                        url: `{{ route('major.show') }}/${id}`,
-                        methot: 'GET',
-                        dataType: 'JSON'
+                    $("#modal-title").html('Update Data Mahasiswa')
+                    method = 'update'
+                    $('#modalData form')[0].reset()
+                    $("#btn-submit").html('Update')
+                    $('#status').prop('selectedIndex', 0)
+                    new Promise((resolve, reject) => {
+                        $.ajax({
+                                url: `{{ route('mahasiswa.show') }}/${id}`,
+                                methot: 'GET',
+                                dataType: 'JSON'
+                            })
+                            .done(res => {
+                                let data = res.data
+                                $("#id").val(data.id)
+                                $("#nama").val(data.nama)
+                                $("#pelajaran").val(data.pelajaran)
+                                $("#major").val(data.major)
+                                $("#method").val('PUT')
+                                $("#modalData").modal('show')
+                                resolve(res)
+                            })
+                            .fail(err => {
+                                swal.fire({
+                                    title: 'Oops...',
+                                    html: 'Ada yang error nih',
+                                    icon: 'error',
+                                })
+                                reject(err)
+                            })
                     })
-                     (res => {
-                        let data = res.data
-                        $("#id").val(data.id)
-                        $("#name").val(data.name)
-                        $("#description").val(data.description)
-                        $("#method").val('PUT')
-                        $("#modalData").modal('show')
-                        resolve(res)
-                    })
-                    .fail(err => {
-                        swal.fire({
-                            title: 'Oops...',
-                            html: 'Ada yang error nih',
-                            icon: 'error',
-                        })
-                        reject(err)
-                    })
-            })
-        }
+                }
 
         function deleteData(id) {
             swal.fire({
@@ -189,7 +198,7 @@
                 if (result.isConfirmed) {
                     new Promise((resolve, reject) => {
                         $.ajax({
-                                url: `{{ url('major') }}/${id}`,
+                                url: `{{ url('mahasiswa') }}/${id}`,
                                 method: 'DELETE',
                                 data: {
                                     '_token': CSRF_TOKEN,
@@ -217,5 +226,5 @@
                 }
             })
         }
-    </script>
+        </script>
 @endsection

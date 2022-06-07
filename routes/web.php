@@ -18,7 +18,14 @@ use Illuminate\Http\Request;
 Route::get('/', function () {
     return view('page.dashboard.index');
 });
-Route::resource('mahasiswa', MahasiswaController::class);
+Route::controller(MahasiswaController::class)->group(function(){
+    Route::get('/mahasiswa','index')->name('mahasiswa.index');
+    Route::get('/mahasiswa/list','datatable')->name('mahasiswa.datatable');
+    Route::post('/mahasiswa','store')->name('mahasiswa.store');
+    Route::get('/mahasiswa/{id?}','show')->name('mahasiswa.show');
+    Route::put('/mahasiswa/{id}','update')->name('mahasiswa.update');
+    Route::delete('/mahasiswa/{id}','destroy')->name('mahasiswa.destroy');
+});
 
 Route::controller(MajorController::class)->group(function(){
     Route::get('/major','index')->name('major.index');

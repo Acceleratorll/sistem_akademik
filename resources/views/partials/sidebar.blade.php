@@ -16,6 +16,7 @@
         </div>
         <div class="navbar-nav w-100">
             <a href="{{url('/')}}" class="nav-item nav-link active"><i class="fa fa-tachometer-alt me-2"></i>Dashboard</a>
+            <a href="{{route('mahasiswa.index')}}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Mahasiswa</a>
             <a href="{{route('major.index')}}" class="nav-item nav-link"><i class="fa fa-th me-2"></i>Jurusan</a>
         </div>
     </nav>

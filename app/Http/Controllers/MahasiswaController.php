@@ -4,39 +4,86 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\Mahasiswa;
+use Yajra\DataTables\DataTables;
 
 class MahasiswaController extends Controller
 {
-    public function index(){
-        $mahasiswa = DB::table('mahasiswa')->get();
-        $post =  Mahasiswa::all();
-        return view('index', compact('mahasiswa'));
-    }
-
-    public function create(){
-        return view('create');
-    }
-
-    public function store(Request $request){
-        Mahasiswa::create($request->all());
-        return redirect()->route('mahasiswa.index');
-    }
     
-    public function edit($Nim)
-    {
-        $Mahasiswa = DB::table('mahasiswa')->where('nim', $Nim)->first();
-        return view('edit', compact('Mahasiswa'));
-        
+    public function index(){
+        return view('page.mahasiswa.index');
     }
-    public function update(Request $request, $Nim)
-    {    
-        Mahasiswa::where('nim', $Nim)->first()->update($request->all());
-        return redirect()->route('mahasiswa.index');
-    }
-    public function destroy($Nim)
+
+    public function show($id)
     {
-        Mahasiswa::where('nim', $Nim)->first()->delete();
-        return redirect()->route('mahasiswa.index');
+        try {
+            $data = Mahasiswa::find($id);
+            return response()->json(['error' => false, 'data' => $data], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'nama' => 'required',
+            'pelajaran' => 'required',
+            'major' => 'required'
+        ]);
+        try {
+            Mahasiswa::create([
+                'nama' => $request->nama,
+                'pelajaran' => $request->pelajaran, 
+                'major' => $request->major
+            ]);
+            return response()->json(['error' => false, 'message' => 'Berhasil Insert Data'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $data = Mahasiswa::find($request->id);
+            $data->update([
+                'nama'=>$request->nama,
+                'pelajaran'=>$request->pelajaran,
+                'major'=>$request->major
+            ]);
+            return response()->json(['error' => false, 'message' => 'Berhasil Update Data'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function destroy($id)
+    {
+        try {
+            $data = Mahasiswa::find($id);
+            $data->delete();
+            return response()->json(['error' => false, 'message' => 'Berhasil Hapus Data'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function datatable()
+    {
+        $data = Mahasiswa::where('deleted_at', null)
+        ->latest()->get();
+        return Datatables::of($data)
+            ->addIndexColumn()
+            ->addColumn('action', function ($row) {
+
+                $btn = '
+                <a href="javascript:void(0)" onclick="editData(\'' . $row->id . '\')" class="btn btn-secondary btn-sm">Edit</a>
+                <a href="javascript:void(0)" onclick="deleteData(\'' . $row->id . '\')" class="btn btn-danger btn-sm">Delete</a>
+                ';
+                return $btn;
+            })
+            ->rawColumns(['action'])
+            ->make(true);
     }
 }
     
