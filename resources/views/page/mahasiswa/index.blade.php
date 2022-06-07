@@ -38,6 +38,7 @@
                 </div>
                 <form action="javascript:;" id="form" onsubmit="onSave(this)" method="post">
                     @csrf
+                    <input type="hidden" name="id" id="id">
                     <input type="hidden" name="_method" id="method">
                     <div class="modal-body">
                         <div class="form-group">
