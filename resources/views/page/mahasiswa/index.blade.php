@@ -14,7 +14,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Nama</th>
-                                        <th>Pelajaran</th>
+                                        <th>nim</th>
                                         <th>Major</th>
                                         <th>Aksi</th>
                                     </tr>
@@ -46,14 +46,14 @@
                             <input type="text" name="nama" class="form-control" id="nama" placeholder="Nama">
                         </div>
                         <div class="form-group">
-                            <label for="nama">Pelajaran</label>
-                            <input type="text" name="pelajaran" class="form-control" id="pelajaran"
-                                placeholder="Pelajaran">
+                            <label for="nim">Nim</label>
+                            <input type="text" name="nim" class="form-control" id="nim" placeholder="nim">
                         </div>
                         <div class="form-group">
-                            <label for="nama">Major</label>
-                            <input type="text" name="major" class="form-control" id="major"
-                                placeholder="Major">
+                            <label for="major_id">Program PKL</label>
+                            <select class="form-control select_major" name="major_id" id="major_id">
+                                <option selected>---Pilih Salah Satu---</option>
+                            </select>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -84,12 +84,12 @@
                         name: 'nama'
                     },
                     {
-                        data: 'pelajaran',
-                        name: 'pelajaran'
+                        data: 'nim',
+                        name: 'nim'
                     },
                     {
-                        data: 'major',
-                        name: 'major'
+                        data: 'major.name',
+                        name: 'major.name'
                     },
                     {
                         data: 'action',
@@ -107,7 +107,22 @@
                 $("#btn-submit").html('Simpan')
                 $("#modalData").modal('show')
             })
+
+            comboMajor()
         })
+
+        function comboMajor() {
+            $.ajax({
+                url: "{{ route('major.combobox') }}",
+                type: 'GET',
+                success: function(res) {
+                    $.each(res.data, function(key, val) {
+                        $(".select_major").append('<option value="' + val.id + '">' + val.name +
+                            '</option>');
+                    });
+                }
+            })
+        }
 
         function onSave() {
             if (method == 'insert') {

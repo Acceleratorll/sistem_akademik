@@ -27,14 +27,13 @@ class MahasiswaController extends Controller
     {
         $this->validate($request, [
             'nama' => 'required',
-            'pelajaran' => 'required',
-            'major' => 'required'
+            'major_id' => 'required'
         ]);
         try {
             Mahasiswa::create([
                 'nama' => $request->nama,
-                'pelajaran' => $request->pelajaran, 
-                'major' => $request->major
+                'nim' => $request->nim,
+                'major_id' => $request->major_id
             ]);
             return response()->json(['error' => false, 'message' => 'Berhasil Insert Data'], 200);
         } catch (\Exception $e) {
@@ -48,8 +47,8 @@ class MahasiswaController extends Controller
             $data = Mahasiswa::find($request->id);
             $data->update([
                 'nama'=>$request->nama,
-                'pelajaran'=>$request->pelajaran,
-                'major'=>$request->major
+                'nim'=>$request->nim,
+                'major_id'=>$request->major_id
             ]);
             return response()->json(['error' => false, 'message' => 'Berhasil Update Data'], 200);
         } catch (\Exception $e) {
@@ -70,7 +69,7 @@ class MahasiswaController extends Controller
 
     public function datatable()
     {
-        $data = Mahasiswa::where('deleted_at', null)
+        $data = Mahasiswa::where('deleted_at', null)->with('major')
         ->latest()->get();
         return Datatables::of($data)
             ->addIndexColumn()

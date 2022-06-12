@@ -11,4 +11,8 @@ class Major extends Model
     use HasFactory, SoftDeletes;
 
     protected $fillable = ['name', 'description'];
+
+    public function mahasiswas(){
+        return $this->hasMany(Mahasiswa::class);
+    }
 }

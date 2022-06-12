@@ -29,6 +29,7 @@ Route::controller(MahasiswaController::class)->group(function(){
 
 Route::controller(MajorController::class)->group(function(){
     Route::get('/major','index')->name('major.index');
+    Route::get('/major/all','getAll')->name('major.combobox');
     Route::get('/major/list','datatable')->name('major.datatable');
     Route::post('/major','store')->name('major.store');
     Route::get('/major/{id?}','show')->name('major.show');

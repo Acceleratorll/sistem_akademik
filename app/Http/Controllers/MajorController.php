@@ -63,6 +63,16 @@ class MajorController extends Controller
         }
     }
 
+    public function getAll(){
+        try{
+            $data = Major::where('deleted_at', null)
+            ->latest()->get();
+            return response()->json(['error' => false, 'data' => $data], 200);
+        }catch(\Exception $e){
+            return response()->json(['error' => true, 'message' => $e->getMessage()], 500);
+        }
+    }
+
     public function datatable()
     {
         $data = Major::where('deleted_at', null)
