@@ -7,17 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Mahasiswa extends Model
+class Pelajaran extends Model
 {
-    protected $table = 'mahasiswa';
+    protected $table = 'pelajaran';
     use HasFactory, SoftDeletes;
     protected $fillable = [
-        'nama',
-        'nim', 'major_id'
+        'id',
+        'nama_pelajaran'
     ];
 
-    public function mapela()
+     public function Mapela()
     {
-        return $this->hasMany(mapela::class);
+        return $this->hasMany(Mapela::class);
     }
-};
+}
